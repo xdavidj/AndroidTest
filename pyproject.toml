@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edhb"
+version = "0.1.0"
+description = "Budget EDH synergy deck builder: maximize Commander deck power per dollar"
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.1",
+    "httpx>=0.27",
+    "ijson>=3.2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.4"]
+
+[project.scripts]
+edhb = "edhb.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["network: tests that require internet access (deselect with '-m \"not network\"')"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

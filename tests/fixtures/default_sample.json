@@ -1,0 +1,27 @@
+[
+  {
+    "id": "print-sol-ring-c21", "oracle_id": "oid-sol-ring", "set": "c21",
+    "layout": "normal", "digital": false, "promo": false, "oversized": false,
+    "games": ["paper"], "prices": {"usd": "2.49", "usd_foil": "5.00"}
+  },
+  {
+    "id": "print-sol-ring-cheap", "oracle_id": "oid-sol-ring", "set": "cm2",
+    "layout": "normal", "digital": false, "promo": false, "oversized": false,
+    "games": ["paper"], "prices": {"usd": "1.20", "usd_foil": "0.90"}
+  },
+  {
+    "id": "print-sol-ring-digital", "oracle_id": "oid-sol-ring", "set": "vma",
+    "layout": "normal", "digital": true, "promo": false, "oversized": false,
+    "games": ["mtgo"], "prices": {"usd": "0.02"}
+  },
+  {
+    "id": "print-sol-ring-oversized", "oracle_id": "oid-sol-ring", "set": "ocm1",
+    "layout": "normal", "digital": false, "promo": false, "oversized": true,
+    "games": ["paper"], "prices": {"usd": "0.01"}
+  },
+  {
+    "id": "print-opt-1", "oracle_id": "oid-opt", "set": "xln",
+    "layout": "normal", "digital": false, "promo": false, "oversized": false,
+    "games": ["paper", "mtgo"], "prices": {"usd": "0.15"}
+  }
+]

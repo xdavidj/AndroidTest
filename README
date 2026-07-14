@@ -1,1 +1,63 @@
-Testing this.
+# edhb — Budget EDH Synergy Deck Builder
+
+Builds ultra-budget, highly synergistic MTG Commander decks. Give it a
+commander and a budget cap; it maximizes deck power per dollar using a
+self-derived synergy engine — no EDHREC popularity data, no netdecks.
+
+## How it works
+
+1. **Ingest** — all Commander-legal cards from Scryfall bulk data, with the
+   cheapest paper printing price per card, plus the Commander Spellbook
+   combo database (ground-truth infinite/win combos). Stored in local SQLite.
+2. **Tag** — a rule engine reads every card's oracle text and applies ~150
+   machine-detectable feature tags (sac outlets, death payoffs, cast
+   triggers, untappers, doublers, tribal lords, ...).
+3. **Synergy** — complementary tag pairs (producer→payoff, fuel→trigger,
+   engine loops) plus shared combo membership give every card pair an edge
+   weight, computed per candidate pool.
+4. **Build** — combo seeding, then greedy marginal-value fill under role
+   quotas (lands/ramp/draw/removal/wincons) with the budget as a hard
+   constraint, then swap passes that convert unused budget into power.
+
+Novelty comes structurally: cheap cards correlate with unpopular cards, and
+cheap combo lines around low-profile commanders are precisely the target.
+
+## Setup
+
+```
+pip install -e ".[dev]"
+edhb ingest              # downloads Scryfall bulk data + Spellbook combos
+edhb tag                 # runs the synergy tagger
+```
+
+`edhb ingest` needs network access to: api.scryfall.com, data.scryfall.io,
+json.commanderspellbook.com, backend.commanderspellbook.com.
+
+## Usage
+
+```
+edhb suggest-commanders --budget 40            # obscure-but-strong commanders
+edhb build --commander "Wilhelt" --budget 40   # build the deck
+edhb build --commander "Wilhelt" --budget 40 --explain   # ...with reasoning
+edhb card "Ashnod's Altar"                     # debug: tags/price/combos
+edhb price-check --deck deck.txt               # re-price a decklist
+```
+
+Budget is a slider: the same commander at $25/$50/$100 produces increasingly
+powerful decks. Basic lands are counted at $0.
+
+## Tests
+
+```
+python -m pytest
+```
+
+## Design notes
+
+- Popularity data (EDHREC ranks, decklist co-occurrence) is deliberately
+  excluded everywhere — synergy is derived from card text and combo
+  structure only. Scryfall's `edhrec_rank` field is never read.
+- Cards are keyed by `oracle_id`; printings exist only to compute the
+  cheapest price.
+- No global synergy matrix is stored: edges are computed per build over the
+  filtered candidate pool.

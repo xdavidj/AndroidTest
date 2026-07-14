@@ -1,0 +1,128 @@
+[
+  {
+    "oracle_id": "oid-rampant-growth", "name": "Rampant Growth",
+    "mana_cost": "{1}{G}", "cmc": 2.0, "type_line": "Sorcery",
+    "oracle_text": "Search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+    "colors": ["G"], "color_identity": ["G"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "0.25"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-sol-ring", "name": "Sol Ring",
+    "mana_cost": "{1}", "cmc": 1.0, "type_line": "Artifact",
+    "oracle_text": "{T}: Add {C}{C}.",
+    "colors": [], "color_identity": [], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "2.49"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-llanowar-elves", "name": "Llanowar Elves",
+    "mana_cost": "{G}", "cmc": 1.0, "type_line": "Creature — Elf Druid",
+    "oracle_text": "{T}: Add {G}.",
+    "colors": ["G"], "color_identity": ["G"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "0.30"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-viscera-seer", "name": "Viscera Seer",
+    "mana_cost": "{B}", "cmc": 1.0, "type_line": "Creature — Vampire Wizard",
+    "oracle_text": "Sacrifice a creature: Scry 1.",
+    "colors": ["B"], "color_identity": ["B"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "0.60"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-ashnods-altar", "name": "Ashnod's Altar",
+    "mana_cost": "{3}", "cmc": 3.0, "type_line": "Artifact",
+    "oracle_text": "Sacrifice a creature: Add {C}{C}.",
+    "colors": [], "color_identity": [], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "8.00"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-zulaport-cutthroat", "name": "Zulaport Cutthroat",
+    "mana_cost": "{1}{B}", "cmc": 2.0, "type_line": "Creature — Human Cleric Ally",
+    "oracle_text": "Whenever Zulaport Cutthroat or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+    "colors": ["B"], "color_identity": ["B"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "0.75"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-blood-artist", "name": "Blood Artist",
+    "mana_cost": "{1}{B}", "cmc": 2.0, "type_line": "Creature — Vampire",
+    "oracle_text": "Whenever Blood Artist or another creature dies, target player loses 1 life and you gain 1 life.",
+    "colors": ["B"], "color_identity": ["B"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "1.50"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-raise-the-alarm", "name": "Raise the Alarm",
+    "mana_cost": "{W}{W}", "cmc": 2.0, "type_line": "Instant",
+    "oracle_text": "Create two 1/1 white Soldier creature tokens.",
+    "colors": ["W"], "color_identity": ["W"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "0.10"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-guttersnipe", "name": "Guttersnipe",
+    "mana_cost": "{2}{R}", "cmc": 3.0, "type_line": "Creature — Goblin Shaman",
+    "oracle_text": "Whenever you cast an instant or sorcery spell, Guttersnipe deals 2 damage to each opponent.",
+    "colors": ["R"], "color_identity": ["R"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "0.50"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-opt", "name": "Opt",
+    "mana_cost": "{U}", "cmc": 1.0, "type_line": "Instant",
+    "oracle_text": "Scry 1.\nDraw a card.",
+    "colors": ["U"], "color_identity": ["U"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "0.15"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-swords", "name": "Swords to Plowshares",
+    "mana_cost": "{W}", "cmc": 1.0, "type_line": "Instant",
+    "oracle_text": "Exile target creature. Its controller gains life equal to its power.",
+    "colors": ["W"], "color_identity": ["W"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "1.80"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-blasphemous-act", "name": "Blasphemous Act",
+    "mana_cost": "{8}{R}", "cmc": 9.0, "type_line": "Sorcery",
+    "oracle_text": "This spell costs {1} less to cast for each creature on the battlefield.\nBlasphemous Act deals 13 damage to each creature.",
+    "colors": ["R"], "color_identity": ["R"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "1.10"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-counterspell", "name": "Counterspell",
+    "mana_cost": "{U}{U}", "cmc": 2.0, "type_line": "Instant",
+    "oracle_text": "Counter target spell.",
+    "colors": ["U"], "color_identity": ["U"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "1.20"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-lord-of-the-undead", "name": "Lord of the Undead",
+    "mana_cost": "{1}{B}{B}", "cmc": 3.0, "type_line": "Creature — Zombie",
+    "oracle_text": "Other Zombie creatures get +1/+1.\n{1}{B}, {T}: Return target Zombie card from your graveyard to your hand.",
+    "colors": ["B"], "color_identity": ["B"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "3.50"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-diregraf-captain", "name": "Diregraf Captain",
+    "mana_cost": "{1}{U}{B}", "cmc": 3.0, "type_line": "Creature — Zombie Soldier",
+    "oracle_text": "Deathtouch\nOther Zombie creatures you control get +1/+1.\nWhenever another Zombie you control dies, target opponent loses 1 life.",
+    "colors": ["U", "B"], "color_identity": ["U", "B"], "keywords": ["Deathtouch"], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "0.90"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-gravecrawler", "name": "Gravecrawler",
+    "mana_cost": "{B}", "cmc": 1.0, "type_line": "Creature — Zombie",
+    "oracle_text": "Gravecrawler can't block.\nYou may cast Gravecrawler from your graveyard as long as you control a Zombie.",
+    "colors": ["B"], "color_identity": ["B"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "3.00"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-wilhelt", "name": "Wilhelt, the Rotcleaver",
+    "mana_cost": "{2}{U}{B}", "cmc": 4.0, "type_line": "Legendary Creature — Zombie Warrior",
+    "oracle_text": "Whenever Wilhelt, the Rotcleaver or another Zombie you control dies, if it didn't have decayed, create a 2/2 black Zombie creature token with decayed.\n{2}, Sacrifice another Zombie: Draw a card. Activate only as a sorcery.",
+    "colors": ["U", "B"], "color_identity": ["U", "B"], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "legal"}, "prices": {"usd": "0.80"}, "games": ["paper"]
+  },
+  {
+    "oracle_id": "oid-digital-only", "name": "Digital Only Test Card",
+    "mana_cost": "{1}", "cmc": 1.0, "type_line": "Artifact",
+    "oracle_text": "{T}: Add {C}.",
+    "colors": [], "color_identity": [], "keywords": [], "layout": "normal",
+    "legalities": {"commander": "not_legal"}, "prices": {}, "games": ["mtgo"]
+  }
+]

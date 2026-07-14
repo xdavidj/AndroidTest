@@ -1,0 +1,48 @@
+{
+  "variants": [
+    {
+      "id": "gravecrawler-altar-cutthroat",
+      "status": "OK",
+      "identity": "B",
+      "manaNeeded": "{B}",
+      "otherPrerequisites": "You control another Zombie.",
+      "description": "Sacrifice Gravecrawler to Ashnod's Altar. Zulaport Cutthroat drains each opponent. Recast Gravecrawler from your graveyard with the mana.",
+      "uses": [
+        {"card": {"name": "Gravecrawler", "oracleId": "oid-gravecrawler"}, "zoneLocations": ["B"], "mustBeCommander": false},
+        {"card": {"name": "Ashnod's Altar", "oracleId": "oid-ashnods-altar"}, "zoneLocations": ["B"], "mustBeCommander": false},
+        {"card": {"name": "Zulaport Cutthroat", "oracleId": "oid-zulaport-cutthroat"}, "zoneLocations": ["B"], "mustBeCommander": false}
+      ],
+      "requires": [],
+      "produces": [
+        {"feature": {"name": "Infinite death triggers"}},
+        {"feature": {"name": "Each opponent loses the game"}}
+      ],
+      "legalities": {"commander": true},
+      "popularity": 99999
+    },
+    {
+      "id": "needs-review-variant",
+      "status": "NEEDS_REVIEW",
+      "identity": "B",
+      "uses": [
+        {"card": {"name": "Viscera Seer", "oracleId": "oid-viscera-seer"}, "mustBeCommander": false},
+        {"card": {"name": "Blood Artist", "oracleId": "oid-blood-artist"}, "mustBeCommander": false}
+      ],
+      "requires": [],
+      "produces": [{"feature": {"name": "Infinite scry"}}],
+      "legalities": {"commander": true}
+    },
+    {
+      "id": "not-commander-legal",
+      "status": "OK",
+      "identity": "U",
+      "uses": [
+        {"card": {"name": "Opt", "oracleId": "oid-opt"}, "mustBeCommander": false},
+        {"card": {"name": "Counterspell", "oracleId": "oid-counterspell"}, "mustBeCommander": false}
+      ],
+      "requires": [],
+      "produces": [{"feature": {"name": "Infinite storm count"}}],
+      "legalities": {"commander": false}
+    }
+  ]
+}
