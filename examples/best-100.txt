@@ -1,84 +1,84 @@
-// Commander: Vishgraz, the Doomhive  ($1.74)
-// Total price: $22.14   Power score: 85.6/100
+// Commander: Admiral Brass, Unsinkable  ($0.24)
+// Total price: $43.38   Power score: 73.8/100
 
-1 Vishgraz, the Doomhive
+1 Admiral Brass, Unsinkable
 
 // Nonlands
-1 Blood Celebrant
-1 Bloodsoaked Champion
-1 Cult Conscript
-1 Eager Cadet
-1 Viscera Seer
-1 Dauntless Survivor
-1 Dina, Soul Steeper
+1 Ruinous Gremlin
+1 Somberwald Vigilante
+1 Weigh Down
+1 Cellar Door
+1 Covetous Castaway // Ghostly Castigator
 1 Eager Construct
+1 Fear of Missing Out
 1 Fleshmad Steed
-1 Forgotten Harvest
-1 Kor Castigator
-1 Ragged Recluse // Odious Witch
-1 Reassembling Skeleton
-1 Renounce
-1 Streetwise Negotiator
-1 Zahur, Glory's Past
-1 Bastion of Remembrance
-1 Bloodflow Connoisseur
-1 Brindle Boar
-1 Cauldron of Essence
-1 Chronicler of Heroes
-1 Crushing Canopy
-1 Denethor, Ruling Steward
-1 Embalmed Ascendant
-1 Herald of the Fair
-1 Magus of the Bridge
-1 Nomad Decoy
-1 Relic Vial
-1 Sandcrafter Mage
-1 Woe Strider
-1 Yahenni, Undying Partisan
+1 Illustrious Historian
+1 Nullpriest of Oblivion
+1 Rune-Brand Juggler
+1 Sultai Skullkeeper
+1 Timestream Navigator
+1 Undead Butler
+1 Altar of the Wretched // Wretched Bonemass
+1 Azra Bladeseeker
+1 Catalog
+1 Doombot Harbinger
+1 Eerie Soultender
+1 HYDRA Troopers
+1 Hardened Berserker
+1 Hekma Sentinels
+1 Seasoned Pyromancer
+1 Skywing Aven
 1 Yotian Soldier
-1 Aven Sentry
-1 Beifong's Bounty Hunters
-1 Blade Banish
-1 Emperor's Vanguard
-1 Erebos, Bleak-Hearted
+1 Billowing Shriekmass
+1 Body Snatcher
+1 Dawnhand Eulogist
+1 Deadly Plot
+1 Diabolic Servitude
+1 Dread Return
+1 Gisa and Geralf
+1 Greed's Gambit
 1 Highway Robber
-1 Isolation Zone
-1 Pitiless Plunderer
-1 Propeller Pioneer
-1 Rural Recruit
-1 Sanctum Spirit
-1 South Wind Avatar
-1 Staunch-Hearted Warrior
-1 Triumphant Surge
-1 Absolving Lammasu
+1 Illicit Masquerade
+1 Jace, Wielder of Mysteries
+1 Keldon Raider
+1 Last Voyage of the _____
+1 Mindwrack Demon
+1 Oriq Loremage
+1 Saltwater Stalwart
+1 Thundering Raiju
 1 Agency Coroner
-1 Expedition Raptor
-1 Griffin Dreamfinder
-1 Gutter Grime
-1 Haazda Vigilante
-1 Heron-Blessed Geist
+1 Bloodline Necromancer
+1 Edgar's Awakening
+1 From the Catacombs
+1 Incarnation Technique
+1 Leveler
+1 Liliana, Death's Majesty
 1 Morkrut Banshee
-1 Near-Death Experience
-1 Ob Nixilis of the Black Oath
-1 Ogre Slumlord
-1 Shilgengar, Sire of Famine
-1 Silumgar Scavenger
-1 Barren Glory
-1 Drooling Groodion
-1 Lord of the Forsaken
-1 Watchful Giant
+1 Phyrexian Delver
+1 Rakdos Joins Up
+1 Summon Undead
+1 Wanderguard Sentry
+1 Yawning Fissure
+1 Young Necromancer
+1 Demon of Dark Schemes
+1 Dreadhound
+1 Opportunity
+1 Skaab Goliath
+1 Fated Return
+1 Polluted Cistern // Dim Oubliette
+1 Sauron, Lord of the Rings
 
 // Lands
-1 Selesnya Guildgate
+1 Bloodfell Caves
 1 Shimmering Grotto
-1 Tranquil Expanse
-1 Blossoming Sands
+1 Cinder Barrens
 1 Rupture Spire
+1 Submerged Boneyard
 1 Transguild Promenade
 1 Uncharted Haven
 1 Unknown Shores
-1 Orzhov Guildgate
-1 Thriving Grove
-9 Plains
-12 Swamp
-5 Forest
+1 Izzet Guildgate
+1 Swiftwater Cliffs
+5 Island
+16 Swamp
+5 Mountain
