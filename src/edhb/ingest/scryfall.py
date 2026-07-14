@@ -118,7 +118,8 @@ def _min_price(prices: dict[str, Any]) -> float | None:
 def iter_bulk_cards(path: Path) -> Iterator[dict[str, Any]]:
     """Stream card objects from a bulk JSON array file without loading it all."""
     with open(path, "rb") as f:
-        yield from ijson.items(f, "item")
+        # use_float: ijson otherwise yields Decimal, which sqlite can't bind.
+        yield from ijson.items(f, "item", use_float=True)
 
 
 # --- Ingest ---------------------------------------------------------------

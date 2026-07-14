@@ -5,7 +5,8 @@
       "status": "OK",
       "identity": "B",
       "manaNeeded": "{B}",
-      "otherPrerequisites": "You control another Zombie.",
+      "notablePrerequisites": "You control another Zombie.",
+      "easyPrerequisites": "",
       "description": "Sacrifice Gravecrawler to Ashnod's Altar. Zulaport Cutthroat drains each opponent. Recast Gravecrawler from your graveyard with the mana.",
       "uses": [
         {"card": {"name": "Gravecrawler", "oracleId": "oid-gravecrawler"}, "zoneLocations": ["B"], "mustBeCommander": false},

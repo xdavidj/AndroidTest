@@ -119,7 +119,13 @@ def ingest_variants(conn: sqlite3.Connection, payload: Any) -> int:
         produces = _produced_names(v)
         templates = v.get("requires") or []
         card_count = len(uses)
-        other_prereqs = v.get("otherPrerequisites") or ""
+        # The live API exposes notablePrerequisites/easyPrerequisites;
+        # older exports used otherPrerequisites. Accept both.
+        other_prereqs = " ".join(filter(None, (
+            v.get("notablePrerequisites"),
+            v.get("easyPrerequisites"),
+            v.get("otherPrerequisites"),
+        ))).strip()
         quality = combo_quality(produces, card_count, bool(templates), other_prereqs)
         conn.execute(
             "INSERT OR REPLACE INTO combos (combo_id, identity, produces, description,"
