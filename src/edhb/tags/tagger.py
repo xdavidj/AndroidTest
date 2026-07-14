@@ -11,6 +11,9 @@ from edhb.tags.ontology import CompiledRule, Rule
 from edhb.tags.rules import all_rules
 
 _REMINDER = re.compile(r"\([^)]*\)")
+# Modern oracle text self-references as "this creature" etc. instead of
+# repeating the card name; fold both forms into `~`.
+_SELF_REF = re.compile(r"\bthis (creature|permanent|artifact|enchantment|land|token)\b")
 
 
 def normalize_text(oracle_text: str, name: str) -> str:
@@ -23,7 +26,7 @@ def normalize_text(oracle_text: str, name: str) -> str:
         short = name.split(",")[0].strip()
         if short and short != name:
             text = text.replace(short, "~")
-    return text.lower()
+    return _SELF_REF.sub("~", text.lower())
 
 
 def card_features(card: sqlite3.Row | dict[str, Any]) -> tuple[str, str, set[str], str, float]:

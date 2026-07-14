@@ -37,14 +37,14 @@
   {
     "oracle_id": "oid-zulaport-cutthroat", "name": "Zulaport Cutthroat",
     "mana_cost": "{1}{B}", "cmc": 2.0, "type_line": "Creature — Human Cleric Ally",
-    "oracle_text": "Whenever Zulaport Cutthroat or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+    "oracle_text": "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
     "colors": ["B"], "color_identity": ["B"], "keywords": [], "layout": "normal",
     "legalities": {"commander": "legal"}, "prices": {"usd": "0.75"}, "games": ["paper"]
   },
   {
     "oracle_id": "oid-blood-artist", "name": "Blood Artist",
     "mana_cost": "{1}{B}", "cmc": 2.0, "type_line": "Creature — Vampire",
-    "oracle_text": "Whenever Blood Artist or another creature dies, target player loses 1 life and you gain 1 life.",
+    "oracle_text": "Whenever this creature or another creature dies, target player loses 1 life and you gain 1 life.",
     "colors": ["B"], "color_identity": ["B"], "keywords": [], "layout": "normal",
     "legalities": {"commander": "legal"}, "prices": {"usd": "1.50"}, "games": ["paper"]
   },
