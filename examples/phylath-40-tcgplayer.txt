@@ -1,0 +1,76 @@
+1 Phylath, World Sculptor
+1 Hangarback Walker
+1 Marketback Walker
+1 Devastating Onslaught
+1 Ruinous Gremlin
+1 Somberwald Vigilante
+1 Wee Champion
+1 Dauntless Survivor
+1 Dragonsguard Elite
+1 Duskshell Crawler
+1 Eager Construct
+1 Fangs of Kalonia
+1 Fanning the Flames
+1 Forgotten Harvest
+1 Goblin Brigand
+1 Illustrious Historian
+1 Molten-Core Maestro
+1 Pollenbright Druid
+1 Streetwise Negotiator
+1 Teachings of the Kirin
+1 Timberland Guide
+1 Azra Bladeseeker
+1 Bloodbriar
+1 Brindle Boar
+1 Burning-Tree Vandal
+1 Courage in Crisis
+1 Crushing Canopy
+1 Fearless Halberdier
+1 Fractal Harness
+1 Hardened Berserker
+1 Hero of the Games
+1 Heroic Feast
+1 Hydra's Growth
+1 Invigorating Surge
+1 Jiang Yanggu, Wildcrafter
+1 Ornery Tumblewagg
+1 Pacesetter Paragon
+1 Pridemalkin
+1 Sage of the Fang
+1 Study the Classics
+1 Turtle Van
+1 Visions of Dominance
+1 Yotian Soldier
+1 Casey Jones, Back Alley Brute
+1 Drix Fatemaker
+1 Emperor's Vanguard
+1 Keldon Raider
+1 Lifecrafter's Gift
+1 Lily Bowen, Raging Grandma
+1 Recon Craft Theta
+1 Rural Recruit
+1 Sazh Katzroy
+1 Staunch-Hearted Warrior
+1 Thundering Raiju
+1 Twisted Spider-Clone
+1 Venomous Brutalizer
+1 Ascendant Acolyte
+1 Myr Prototype
+1 Paradox Zone
+1 Plaguemaw Beast
+1 Scourge of Valkas
+1 Shang-Chi, Martial Mentor
+1 Yawning Fissure
+1 Defiant Ogre
+1 Timber Gorge
+1 Shimmering Grotto
+1 Rupture Spire
+1 Transguild Promenade
+1 Uncharted Haven
+1 Unknown Shores
+1 Gruul Guildgate
+1 Racers' Ring
+1 Thriving Bluff
+1 Thriving Grove
+10 Mountain
+16 Forest
