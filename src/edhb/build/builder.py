@@ -401,13 +401,16 @@ def suggest_commanders(
             (row["oracle_id"],),
         ).fetchone()[0]
         novelty = 1.0 if (row["price_usd"] or 0) < 2.0 else 0.0
+        # log on combo count: raw counts reach the thousands for famous
+        # combo commanders and would otherwise drown the synergy signal.
+        score = 3.0 * mass + 25.0 * math.log1p(combo_count) + 10.0 * novelty
         results.append({
             "name": row["name"],
             "price": row["price_usd"],
             "identity": config.mask_colors(ci),
             "synergy_mass": round(mass, 1),
             "combos": combo_count,
-            "score": round(mass + 2.0 * combo_count + novelty, 1),
+            "score": round(score, 1),
             "tags": sorted(my_tags),
         })
     results.sort(key=lambda r: (-r["score"], r["name"]))
