@@ -31,6 +31,12 @@ class BuildError(Exception):
     pass
 
 
+# Prices are floats of dollars; accumulated arithmetic drifts by ~1e-15 per
+# op, which is enough to fail an exact budget-boundary comparison. All
+# budget comparisons tolerate this.
+EPS = 1e-6
+
+
 def _card_rec(row: sqlite3.Row, tag_info: list[tuple[str, str, str]]) -> CardRec:
     return CardRec(
         oracle_id=row["oracle_id"],
@@ -124,7 +130,46 @@ def seed_combos(
     return chosen_cards, chosen_combos
 
 
+# Fixed sub-budget rungs shared by every build. Because the rung set at a
+# lower budget is a subset of the rung set at any higher budget, the best
+# score is monotone in budget by construction.
+BUDGET_GRID = (10, 15, 25, 35, 50, 70, 100, 140, 200, 300, 500, 750, 1000)
+
+
 def build_deck(
+    conn: sqlite3.Connection,
+    commander_name: str,
+    budget: float,
+    seed: int | None = None,
+    ladder: bool = True,
+) -> DeckResult:
+    """Build at the cap and at every grid rung below it; keep the best deck.
+
+    Greedy construction is myopic: a larger budget can occasionally land on
+    a slightly worse deck than a tighter one would. Trying the fixed
+    sub-budget rungs and keeping the winner guarantees more budget never
+    yields a worse deck.
+    """
+    rungs = [budget]
+    if ladder:
+        rungs += [float(g) for g in BUDGET_GRID if g < budget]
+    best: DeckResult | None = None
+    last_error: BuildError | None = None
+    for rung in sorted(rungs, reverse=True):
+        try:
+            result = _build_once(conn, commander_name, rung, seed=seed)
+        except BuildError as e:
+            last_error = e
+            continue
+        if best is None or (result.score["total"], -result.total_price) > (
+                best.score["total"], -best.total_price):
+            best = result
+    if best is None:
+        raise last_error or BuildError("no build succeeded")
+    return best
+
+
+def _build_once(
     conn: sqlite3.Connection,
     commander_name: str,
     budget: float,
@@ -178,22 +223,41 @@ def build_deck(
     seeded_cards, seeded_combos = seed_combos(
         ctx, pool, commander_id, combo_budget=budget * config.COMBO_BUDGET_FRACTION)
     for oid in seeded_cards:
-        if spent + pool[oid].price <= nonland_budget and len(deck) < roles.nonland_slots():
+        if spent + pool[oid].price <= nonland_budget + EPS and len(deck) < roles.nonland_slots():
             add(oid, f"combo package ({', '.join(seeded_combos)})")
 
     # 2. Greedy fill. Each pick must leave enough budget to fill every
-    # remaining slot at the cheapest available price, so the deck always
-    # reaches exactly `slots` nonlands (or fails loudly).
+    # remaining slot with the actually-cheapest remaining cards (a sum,
+    # not slots x min price), so the deck always reaches exactly `slots`
+    # nonlands (or fails loudly).
     slots = roles.nonland_slots()
+    by_price = sorted(pool.values(), key=lambda c: (c.price, c.oracle_id))
     while len(deck) < slots:
         budget_left = nonland_budget - spent
         remaining_after = slots - len(deck) - 1
-        cheapest = min(
-            (c.price for oid, c in pool.items() if oid not in deck), default=0.0)
-        headroom = budget_left - remaining_after * cheapest
+        # Cheapest remaining_after+1 unpicked cards; prefix sums give the
+        # exact reserve needed whether or not the candidate is among them.
+        cheap_ids: dict[str, int] = {}
+        cheap_prefix = [0.0]
+        for c in by_price:
+            if len(cheap_ids) > remaining_after:
+                break
+            if c.oracle_id in deck:
+                continue
+            cheap_ids[c.oracle_id] = len(cheap_ids)
+            cheap_prefix.append(cheap_prefix[-1] + c.price)
         best_oid, best_val = None, float("-inf")
         for oid, card in pool.items():
-            if oid in deck or card.price > headroom:
+            if oid in deck:
+                continue
+            if oid in cheap_ids and cheap_ids[oid] < remaining_after:
+                # Candidate is inside the reserve set: replace it with the
+                # next cheapest card when computing the remainder cost.
+                reserve = cheap_prefix[min(remaining_after + 1, len(cheap_prefix) - 1)] \
+                    - card.price
+            else:
+                reserve = cheap_prefix[min(remaining_after, len(cheap_prefix) - 1)]
+            if card.price + reserve > budget_left + EPS:
                 continue
             val = marginal_value(card, syn_sum[oid], cmd_edge[oid],
                                  set(deck), role_counts, ctx) + noise.get(oid, 0.0)
@@ -230,7 +294,7 @@ def build_deck(
                     set(deck) - {weak.oracle_id}, role_counts, ctx)
                 cand_best, cand_val = None, weak_val + 0.5
                 for oid, card in pool.items():
-                    if oid in deck or card.price > headroom:
+                    if oid in deck or card.price > headroom + EPS:
                         continue
                     val = marginal_value(card, syn_sum[oid], cmd_edge[oid],
                                          set(deck) - {weak.oracle_id}, role_counts, ctx)
