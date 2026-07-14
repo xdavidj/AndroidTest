@@ -23,6 +23,7 @@ class CardRec:
     mana_cost: str
     tag_roles: set[str] = field(default_factory=set)
     n_tags: int = 0
+    efficiency: float = 0.0
 
     @property
     def primary_role(self) -> str:
@@ -31,6 +32,50 @@ class CardRec:
     @property
     def is_land(self) -> bool:
         return "Land" in self.type_line
+
+
+import re as _re
+
+_ADD_MANA = _re.compile(r"add ((?:\{[wubrgc0-9]\})+)")
+_SYMBOL = _re.compile(r"\{[wubrgc0-9]\}")
+
+
+def efficiency_prior(tag_roles: set[str], mana_value: float, type_line: str,
+                     oracle_text: str) -> float:
+    """Intrinsic rate-of-exchange quality, computed from the card itself.
+
+    Commander fundamentals: cheap mana acceleration and cheap interaction
+    win games. Tag-pair synergy can't see that Sol Ring ({1} for {C}{C})
+    is better than a 3-mana rock, so rate the exchange directly.
+    Self-derived - no popularity data.
+    """
+    score = 0.0
+    text = (oracle_text or "").lower()
+    if "RAMP" in tag_roles:
+        one_shot = "Instant" in type_line or "Sorcery" in type_line
+        if one_shot:
+            # Rituals are tempo, not acceleration: they add mana once,
+            # not every turn. Modest flat credit.
+            score += 1.0
+        else:
+            score += (3.5 - max(1.0, mana_value)) * 4.0
+            m = _ADD_MANA.search(text)
+            if m:  # extra credit per mana produced beyond the first, each turn
+                produced = len(_SYMBOL.findall(m.group(1)))
+                score += 6.0 * max(0, produced - 1)
+            if "spend this mana only" in text:
+                score -= 4.0  # restricted mana is a real downgrade
+    if "REMOVAL" in tag_roles:
+        score += (3.5 - mana_value) * 2.0
+        if "Instant" in type_line:
+            score += 1.5
+    if "WIPE" in tag_roles:
+        score += (5.5 - mana_value) * 1.0
+    if "TUTOR" in tag_roles:
+        score += (4.5 - mana_value) * 1.5
+    if "DRAW" in tag_roles:
+        score += (4.5 - mana_value) * 1.0
+    return max(-3.0, min(20.0, score))
 
 
 COMMANDER_EDGE_WEIGHT = 3.0
@@ -55,6 +100,9 @@ def combo_bonus(candidate: str, deck_ids: set[str], ctx: "SynergyContext") -> fl
     return bonus
 
 
+SYNERGY_DAMP = 14.0
+
+
 def marginal_value(
     card: CardRec,
     synergy_to_deck: float,
@@ -63,11 +111,18 @@ def marginal_value(
     role_counts: dict[str, int],
     ctx: "SynergyContext",
 ) -> float:
-    value = synergy_to_deck
+    import math
+    # Sub-linear in accumulated synergy ABOVE the knee: the 10th card
+    # feeding the same trigger is worth less than the 1st, so raw pile-on
+    # can't drown out rate quality at the pick margin. Below the knee the
+    # response stays linear (a bare sqrt would inflate tiny synergies).
+    syn = max(0.0, synergy_to_deck)
+    value = min(syn, math.sqrt(syn * SYNERGY_DAMP))
     value += COMMANDER_EDGE_WEIGHT * commander_edge
     value += combo_bonus(card.oracle_id, deck_ids, ctx)
     value += roles.role_deficit_bonus(card.primary_role, role_counts)
     value += QUALITY_PER_TAG * card.n_tags
+    value += card.efficiency
     if card.price < config.NOVELTY_PRICE_THRESHOLD:
         value += config.NOVELTY_BONUS
     value -= CURVE_PENALTY_PER_MV * max(0.0, card.mana_value - CURVE_FREE_MV)
@@ -135,12 +190,16 @@ def deck_power_score(
     interaction_pts = _saturating(
         15.0 * interaction / interaction_quota, scale=10.0, ceiling=15.0)
 
-    # Mana health: land count in band + curve.
+    # Mana health: land count in band + curve + actual ramp count.
+    # ~10 ramp / 38 mana sources is the Commander skeleton; a deck with no
+    # acceleration cannot deploy its plan on schedule.
     mvs = [cards[i].mana_value for i in ids]
     avg_mv = sum(mvs) / len(mvs) if mvs else 0.0
-    land_pts = 5.0 - min(5.0, abs(land_count - config.ROLE_QUOTAS["LAND"]) * 1.5)
-    curve_pts = 5.0 - min(5.0, max(0.0, avg_mv - 3.2) * 2.5)
-    mana_pts = max(0.0, land_pts + curve_pts)
+    land_pts = 3.0 - min(3.0, abs(land_count - config.ROLE_QUOTAS["LAND"]) * 1.0)
+    curve_pts = 3.0 - min(3.0, max(0.0, avg_mv - 3.2) * 1.5)
+    ramp_count = sum(1 for i in ids if "RAMP" in cards[i].tag_roles)
+    ramp_pts = 4.0 * min(1.0, ramp_count / config.ROLE_QUOTAS["RAMP"])
+    mana_pts = max(0.0, land_pts + curve_pts + ramp_pts)
 
     total = synergy_pts + combo_pts + consistency_pts + interaction_pts + mana_pts
     return {

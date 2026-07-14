@@ -131,3 +131,23 @@ def test_export_and_explain_smoke(synth_db):
     assert '"total_price"' in js
     report = explain.explain(result)
     assert "Power score" in report
+
+
+def test_role_skeleton_guaranteed(synth_db):
+    # Ramp/draw/removal quotas must survive contact with a synergy-dense
+    # pool: synergy may not outbid the deck's skeleton out of existence.
+    result = build_deck(synth_db, "Test Overlord", budget=25.0)
+    role_counts = {}
+    for c in result.nonlands:
+        role_counts[c.primary_role] = role_counts.get(c.primary_role, 0) + 1
+    assert role_counts.get("RAMP", 0) >= 10
+    assert role_counts.get("DRAW", 0) >= 10
+    assert role_counts.get("REMOVAL", 0) >= 7
+
+
+def test_efficiency_prefers_better_rock(conn):
+    from edhb.build.score import efficiency_prior
+
+    sol_ring = efficiency_prior({"RAMP"}, 1.0, "Artifact", "{T}: Add {C}{C}.")
+    diamond = efficiency_prior({"RAMP"}, 2.0, "Artifact", "{T}: Add {B}.")
+    assert sol_ring > diamond

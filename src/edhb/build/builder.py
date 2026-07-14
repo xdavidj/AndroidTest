@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 
 from edhb import config
 from edhb.build import manabase, roles
-from edhb.build.score import CardRec, deck_power_score, marginal_value
+from edhb.build.score import CardRec, deck_power_score, efficiency_prior, marginal_value
 from edhb.synergy.graph import SynergyContext
 
 
@@ -38,6 +38,7 @@ EPS = 1e-6
 
 
 def _card_rec(row: sqlite3.Row, tag_info: list[tuple[str, str, str]]) -> CardRec:
+    tag_roles = {role for _, _, role in tag_info}
     return CardRec(
         oracle_id=row["oracle_id"],
         name=row["name"],
@@ -45,8 +46,11 @@ def _card_rec(row: sqlite3.Row, tag_info: list[tuple[str, str, str]]) -> CardRec
         mana_value=row["mana_value"] or 0.0,
         type_line=row["type_line"] or "",
         mana_cost=row["mana_cost"] or "",
-        tag_roles={role for _, _, role in tag_info},
+        tag_roles=tag_roles,
         n_tags=len(tag_info),
+        efficiency=efficiency_prior(
+            tag_roles, row["mana_value"] or 0.0, row["type_line"] or "",
+            row["oracle_text"] or ""),
     )
 
 
@@ -231,6 +235,8 @@ def _build_once(
     # not slots x min price), so the deck always reaches exactly `slots`
     # nonlands (or fails loudly).
     slots = roles.nonland_slots()
+    quota_roles = {r: q for r, q in config.ROLE_QUOTAS.items() if r != "LAND"}
+    SKELETON_ROLES = ("RAMP", "DRAW", "REMOVAL", "WIPE", "PROTECTION")
     by_price = sorted(pool.values(), key=lambda c: (c.price, c.oracle_id))
     while len(deck) < slots:
         budget_left = nonland_budget - spent
@@ -246,23 +252,49 @@ def _build_once(
                 continue
             cheap_ids[c.oracle_id] = len(cheap_ids)
             cheap_prefix.append(cheap_prefix[-1] + c.price)
-        best_oid, best_val = None, float("-inf")
-        for oid, card in pool.items():
-            if oid in deck:
-                continue
-            if oid in cheap_ids and cheap_ids[oid] < remaining_after:
-                # Candidate is inside the reserve set: replace it with the
-                # next cheapest card when computing the remainder cost.
-                reserve = cheap_prefix[min(remaining_after + 1, len(cheap_prefix) - 1)] \
-                    - card.price
-            else:
-                reserve = cheap_prefix[min(remaining_after, len(cheap_prefix) - 1)]
-            if card.price + reserve > budget_left + EPS:
-                continue
-            val = marginal_value(card, syn_sum[oid], cmd_edge[oid],
-                                 set(deck), role_counts, ctx) + noise.get(oid, 0.0)
-            if val > best_val or (val == best_val and best_oid and oid < best_oid):
-                best_oid, best_val = oid, val
+        # Role skeleton guarantee, skeleton-FIRST: while ramp/draw/removal/
+        # wipe/protection quotas are unmet, only those roles may be picked,
+        # so the skeleton is bought while the budget is still whole (filling
+        # it last meant ramp got whatever pennies remained). WINCON stays a
+        # late guarantee — win conditions want maximum synergy context.
+        skeleton_deficit = {r for r in SKELETON_ROLES
+                            if quota_roles[r] - role_counts.get(r, 0) > 0}
+        deficits = {r for r, q in quota_roles.items()
+                    if q - role_counts.get(r, 0) > 0}
+        total_deficit = sum(max(0, q - role_counts.get(r, 0))
+                            for r, q in quota_roles.items())
+        must_fill_quota = bool(skeleton_deficit) or (
+            total_deficit >= (slots - len(deck)))
+        if skeleton_deficit:
+            deficits = skeleton_deficit
+
+        def best_pick(only_roles):
+            best_oid, best_val = None, float("-inf")
+            for oid, card in pool.items():
+                if oid in deck:
+                    continue
+                if only_roles is not None and card.primary_role not in only_roles:
+                    continue
+                if oid in cheap_ids and cheap_ids[oid] < remaining_after:
+                    # Candidate is inside the reserve set: replace it with the
+                    # next cheapest card when computing the remainder cost.
+                    reserve = cheap_prefix[min(remaining_after + 1, len(cheap_prefix) - 1)] \
+                        - card.price
+                else:
+                    reserve = cheap_prefix[min(remaining_after, len(cheap_prefix) - 1)]
+                if card.price + reserve > budget_left + EPS:
+                    continue
+                val = marginal_value(card, syn_sum[oid], cmd_edge[oid],
+                                     set(deck), role_counts, ctx) + noise.get(oid, 0.0)
+                if val > best_val or (val == best_val and best_oid and oid < best_oid):
+                    best_oid, best_val = oid, val
+            return best_oid, best_val
+
+        best_oid, best_val = best_pick(deficits if must_fill_quota else None)
+        if best_oid is None and must_fill_quota:
+            # Quota roles exhausted or unaffordable in this pool; fall back
+            # rather than failing the whole build.
+            best_oid, best_val = best_pick(None)
         if best_oid is None:
             raise BuildError(
                 f"Cannot fill the deck at budget ${budget:.2f}: "
