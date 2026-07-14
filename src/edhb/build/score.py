@@ -77,6 +77,16 @@ def marginal_value(
 # --- Deck power score (0-100) ----------------------------------------------
 
 
+def _saturating(x: float, scale: float, ceiling: float) -> float:
+    """Diminishing-returns curve: approaches `ceiling`, never hits a wall.
+
+    Hard caps made every dense budget deck score identically, so extra
+    budget looked worthless to the evaluator.
+    """
+    import math
+    return ceiling * (1.0 - math.exp(-x / scale))
+
+
 def deck_power_score(
     nonland_ids: list[str],
     commander_id: str,
@@ -97,9 +107,11 @@ def deck_power_score(
         pair_sum += ctx.edge(ids[i], commander_id) * 2  # commander is always available
         pair_count += 2
     density = pair_sum / pair_count if pair_count else 0.0
-    synergy_pts = min(40.0, density * 55.0)
+    synergy_pts = _saturating(density, scale=0.55, ceiling=35.0)
 
-    # Combo lines fully present in deck (+commander), diminishing after 2.
+    # Combo lines fully present in deck (+commander). Geometric weighting:
+    # the best few lines carry the value; the 400th redundant variant is
+    # nearly worthless.
     deck_set = set(ids) | {commander_id}
     complete = [
         cid for cid, members in ctx.combo_cards.items()
@@ -109,23 +121,25 @@ def deck_power_score(
         (max(0.0, ctx.combo_meta[c]["quality"]) for c in complete if c in ctx.combo_meta),
         reverse=True,
     )
-    combo_raw = sum(q if i < 2 else q * 0.4 for i, q in enumerate(qualities))
-    combo_pts = min(25.0, combo_raw * 1.5)
+    combo_raw = sum(q * (0.6 ** i) for i, q in enumerate(qualities[:24]))
+    combo_pts = _saturating(combo_raw, scale=14.0, ceiling=25.0)
 
-    # Consistency: tutors + redundancy (roles with >= 3 members beyond quota roles).
+    # Consistency: tutors find the combo instead of hoping to draw it.
     tutor_count = sum(1 for i in ids if "TUTOR" in cards[i].tag_roles)
-    consistency_pts = min(10.0, tutor_count * 2.0 + (2.0 if len(complete) >= 2 else 0.0))
+    consistency_raw = tutor_count * 2.0 + (2.0 if len(complete) >= 2 else 0.0)
+    consistency_pts = _saturating(consistency_raw, scale=8.0, ceiling=15.0)
 
     # Interaction vs quota.
     interaction = sum(1 for i in ids if cards[i].primary_role in ("REMOVAL", "WIPE"))
     interaction_quota = config.ROLE_QUOTAS["REMOVAL"] + config.ROLE_QUOTAS["WIPE"]
-    interaction_pts = min(10.0, 10.0 * interaction / interaction_quota)
+    interaction_pts = _saturating(
+        15.0 * interaction / interaction_quota, scale=10.0, ceiling=15.0)
 
     # Mana health: land count in band + curve.
     mvs = [cards[i].mana_value for i in ids]
     avg_mv = sum(mvs) / len(mvs) if mvs else 0.0
-    land_pts = 8.0 - min(8.0, abs(land_count - config.ROLE_QUOTAS["LAND"]) * 2.0)
-    curve_pts = 7.0 - min(7.0, max(0.0, avg_mv - 3.2) * 3.0)
+    land_pts = 5.0 - min(5.0, abs(land_count - config.ROLE_QUOTAS["LAND"]) * 1.5)
+    curve_pts = 5.0 - min(5.0, max(0.0, avg_mv - 3.2) * 2.5)
     mana_pts = max(0.0, land_pts + curve_pts)
 
     total = synergy_pts + combo_pts + consistency_pts + interaction_pts + mana_pts

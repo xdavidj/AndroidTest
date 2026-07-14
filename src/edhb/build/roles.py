@@ -19,7 +19,12 @@ def primary_role(type_line: str, tag_roles: set[str]) -> str:
 
 
 def role_deficit_bonus(role: str, counts: dict[str, int]) -> float:
-    """Positive while a role is under quota, negative once over-quota."""
+    """Positive while a role is under quota, negative once over-quota.
+
+    Scaled to compete with synergy sums at the pick margin (~20-60 late in
+    a build); at the old ~3.0 ceiling the builder skipped tutors/removal
+    entirely because raw synergy always dominated.
+    """
     if role in ("LAND",):
         return 0.0
     quota = config.ROLE_QUOTAS.get(role)
@@ -27,8 +32,8 @@ def role_deficit_bonus(role: str, counts: dict[str, int]) -> float:
         return 0.0
     deficit = quota - counts.get(role, 0)
     if deficit > 0:
-        return 2.0 * min(1.0, deficit / quota) + 1.0
-    return -1.0 * min(2.0, -deficit * 0.5)
+        return 12.0 * min(1.0, deficit / quota) + 6.0
+    return -4.0 * min(2.0, -deficit * 0.5)
 
 
 def nonland_slots() -> int:
